@@ -6,18 +6,19 @@ const {
   updateUsers,
   deleteUsers,
 } = require('../controllers/users.controllers');
+const { verifyUserById } = require('../middlewares/users.middlewares');
 
 const router = Router();
 
 router.get('/', getUsers);
 
-router.get('/:id', getUsersById);
+router.get('/:id', verifyUserById, getUsersById);
 
 router.post('/', createUser);
 
-router.patch('/:id', updateUsers);
+router.patch('/:id', verifyUserById, updateUsers);
 
-router.delete('/:id', deleteUsers);
+router.delete('/:id', verifyUserById, deleteUsers);
 
 module.exports = {
   usersRouter: router,

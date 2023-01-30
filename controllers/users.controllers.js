@@ -25,23 +25,9 @@ exports.getUsers = async (req, res) => {
 };
 exports.getUsersById = async (req, res) => {
   try {
-    // buscamos el id en req.params
-    const { id } = req.params;
-    //buscamos el usuario por el id que obtenemos en los params y validamos el status
+    // buscamos el user  en req
+    const { user } = req;
 
-    const user = await User.findOne({
-      where: {
-        id,
-        status: true,
-      },
-    });
-    // validamos la existencia del usuario y si no existe  enviamos el error
-    if (!user) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'User not found',
-      });
-    }
     //enviamos la respuesta al usuario
     console.log(req.query);
     res.json({
@@ -89,20 +75,10 @@ exports.createUser = async (req, res) => {
 
 exports.updateUsers = async (req, res) => {
   try {
-    // primero obtenemos el id por el req.params
-    const { id } = req.params;
-    // obtenemos la informacion que vamos a actualizar del req.body
+    // buscamos el user  en req
+    const { user } = req;
 
     const { name, email } = req.body;
-
-    //obtemos el usuario por el id que ya recivimos y validamos el status
-
-    const user = await User.findOne({
-      where: {
-        id,
-        status: true,
-      },
-    });
 
     // validamos la existencia del usuario y si no existe enviamos el error
     if (!user) {

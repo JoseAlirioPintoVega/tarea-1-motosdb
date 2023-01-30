@@ -6,18 +6,19 @@ const {
   updateRepairs,
   deleteRepairs,
 } = require('../controllers/repairs.controllers');
+const { verifyRepairById } = require('../middlewares/repairs.middlewares');
 
 const router = Router();
 
 router.get('/', getRepairs);
 
-router.get('/:id', getRepairsById);
+router.get('/:id', verifyRepairById, getRepairsById);
 
 router.post('/', createRepairs);
 
-router.patch('/:id', updateRepairs);
+router.patch('/:id', verifyRepairById, updateRepairs);
 
-router.delete('/:id', deleteRepairs);
+router.delete('/:id', verifyRepairById, deleteRepairs);
 
 module.exports = {
   repairsRouter: router,
