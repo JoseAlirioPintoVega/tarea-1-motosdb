@@ -1,146 +1,108 @@
 const { User } = require('../models/user.model');
+const catchAsync = require('../utils/catchAsync');
 
-exports.getUsers = async (req, res) => {
-  try {
-    //aca buscamos todos los usuarios
-    const users = await User.findAll({
-      where: {
-        status: true,
-      },
-    });
+exports.getUsers = catchAsync(async (req, res) => {
+  //aca buscamos todos los usuarios
+  const users = await User.findAll({
+    where: {
+      status: true,
+    },
+  });
 
-    // enviamos la respuesta al usuario
-    res.status(200).json({
-      status: 'success',
-      message: 'Users ware found successfully',
-      users,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error',
-    });
-  }
-};
-exports.getUsersById = async (req, res) => {
-  try {
-    // buscamos el user  en req
-    const { user } = req;
+  // enviamos la respuesta al usuario
+  res.status(200).json({
+    status: 'success',
+    message: 'Users ware found successfully',
+    users,
+  });
+});
+exports.getUsersById = catchAsync(async (req, res) => {
+  // buscamos el user  en req
+  const { user } = req;
 
-    //enviamos la respuesta al usuario
-    console.log(req.query);
-    res.json({
-      status: 'success',
-      message: 'User was found successfully',
-      user,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error',
-    });
-  }
-};
+  //enviamos la respuesta al usuario
+  console.log(req.query);
+  res.json({
+    status: 'success',
+    message: 'User was found successfully',
+    user,
+  });
+});
 
-exports.createUser = async (req, res) => {
+exports.createUser = catchAsync(async (req, res) => {
   // obtenemos la información del req.body
-  try {
-    const { name, email, password } = req.body;
 
-    console.log(name, email, password);
-    //creamos el usuario
+  const { name, email, password } = req.body;
 
-    const newUser = await User.create({
-      name: name.toLowerCase(),
-      email: email.toLowerCase(),
-      password,
-    });
-    // enviamos la respuesta al usuario
+  console.log(name, email, password);
+  //creamos el usuario
 
-    res.status(201).json({
-      status: 'success',
-      message: 'User was created sucessfully',
-      newUser,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 'fail',
-      message: 'internal server error',
-    });
-  }
-};
+  const newUser = await User.create({
+    name: name.toLowerCase(),
+    email: email.toLowerCase(),
+    password,
+  });
+  // enviamos la respuesta al usuario
 
-exports.updateUsers = async (req, res) => {
-  try {
-    // buscamos el user  en req
-    const { user } = req;
+  res.status(201).json({
+    status: 'success',
+    message: 'User was created sucessfully',
+    newUser,
+  });
+});
 
-    const { name, email } = req.body;
+exports.updateUsers = catchAsync(async (req, res) => {
+  // buscamos el user  en req
+  const { user } = req;
 
-    // validamos la existencia del usuario y si no existe enviamos el error
-    if (!user) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'User not found',
-      });
-    }
+  const { name, email } = req.body;
 
-    // si todo esta  correcto realizamos la  actualización
-    const updatedUser = await user.update({
-      name,
-      email,
-    });
-
-    // finalmente enviamos la respuesta al usuario
-    res.status(200).json({
-      status: 'success',
-      message: 'User updated successfully',
-      updatedUser,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error',
+  // validamos la existencia del usuario y si no existe enviamos el error
+  if (!user) {
+    return res.status(404).json({
+      status: 'error',
+      message: 'User not found',
     });
   }
-};
 
-exports.deleteUsers = async (req, res) => {
-  try {
-    // primero obtenemos el id en el req.params
-    const { id } = req.params;
+  // si todo esta  correcto realizamos la  actualización
+  const updatedUser = await user.update({
+    name,
+    email,
+  });
 
-    // luego buscamos el usuario a eliminar con el id y validamos el status
-    const user = await User.findOne({
-      where: {
-        id,
-        status: true,
-      },
-    });
-    // si el producto no esta enviamos el error
-    if (!user) {
-      return res.status(404).json({
-        status: 'error',
-        menssage: 'User was not found',
-      });
-    }
-    // ahora realizamos la  actualizaciondel estado "eliminar"
-    await user.update({ status: false });
-    // finalmente enviamos la respuesta al usuario
+  // finalmente enviamos la respuesta al usuario
+  res.status(200).json({
+    status: 'success',
+    message: 'User updated successfully',
+    updatedUser,
+  });
+});
 
-    res.status(200).json({
-      status: 'success',
-      message: 'User was deleted',
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error',
+exports.deleteUsers = catchAsync(async (req, res) => {
+  // primero obtenemos el id en el req.params
+  const { id } = req.params;
+
+  // luego buscamos el usuario a eliminar con el id y validamos el status
+  const user = await User.findOne({
+    where: {
+      id,
+      status: true,
+    },
+  });
+  // si el producto no esta enviamos el error
+  if (!user) {
+    return res.status(404).json({
+      status: 'error',
+      menssage: 'User was not found',
     });
   }
-};
+  // ahora realizamos la  actualizaciondel estado "eliminar"
+  await user.update({ status: false });
+  // finalmente enviamos la respuesta al usuario
+
+  res.status(200).json({
+    status: 'success',
+    message: 'User was deleted',
+  });
+});

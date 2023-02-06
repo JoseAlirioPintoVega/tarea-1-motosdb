@@ -1,10 +1,11 @@
 const express = require('express');
-
 const cors = require('cors');
 const { usersRouter } = require('../routes/users.routes');
 const { repairsRouter } = require('../routes/repairs.routes');
 const morgan = require('morgan');
 const { db } = require('../dababase/db');
+const AppError = require('../utils/appError');
+const globalErrorHandler = require('../controllers/error.controler');
 
 class Server {
   constructor() {
@@ -20,6 +21,13 @@ class Server {
     this.Route();
   }
   middlewares() {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('HOLA ESTOY EN DESARROLLO');
+    }
+    if (process.env.NODE_ENV === 'production') {
+      console.log('HOLA ESTOY EN PRODUCCIÓN');
+    }
+
     this.app.use(morgan('dev'));
     this.app.use(cors());
     this.app.use(express.json());
@@ -28,6 +36,13 @@ class Server {
   Route() {
     this.app.use(this.paths.users, usersRouter);
     this.app.use(this.paths.repairs, repairsRouter);
+
+    this.app.all('*', (req, res, next) => {
+      return next(
+        new AppError(`Can't find ${req.originalUrl} on this server`, 404)
+      );
+    });
+    this.app.use(globalErrorHandler);
   }
   database() {
     db.authenticate()
