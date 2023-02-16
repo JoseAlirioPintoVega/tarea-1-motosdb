@@ -7,18 +7,21 @@ const {
   deleteRepairs,
 } = require('../controllers/repairs.controllers');
 const { verifyRepairById } = require('../middlewares/repairs.middlewares');
+const { protect, restrictTo } = require('../middlewares/users.middlewares');
 
 const router = Router();
 
-router.get('/', getRepairs);
+router.use(protect);
 
-router.get('/:id', verifyRepairById, getRepairsById);
+router.get('/', restrictTo('employee'), getRepairs);
+
+router.get('/:id', restrictTo('employee'), verifyRepairById, getRepairsById);
 
 router.post('/', createRepairs);
 
-router.patch('/:id', verifyRepairById, updateRepairs);
+router.patch('/:id', restrictTo('employee'), verifyRepairById, updateRepairs);
 
-router.delete('/:id', verifyRepairById, deleteRepairs);
+router.delete('/:id', restrictTo('employee'), verifyRepairById, deleteRepairs);
 
 module.exports = {
   repairsRouter: router,

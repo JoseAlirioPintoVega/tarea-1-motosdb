@@ -28,8 +28,8 @@ exports.User = db.define('user', {
     enum: ['client', 'employee'],
   },
   status: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.ENUM('available', 'cancel'),
     allowNull: false,
-    defaultValue: true,
+    defaultValue: 'available',
   },
 });

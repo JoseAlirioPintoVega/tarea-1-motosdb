@@ -15,6 +15,7 @@ exports.getRepairs = catchAsync(async (req, res) => {
     repairs,
   });
 });
+
 exports.getRepairsById = catchAsync(async (req, res) => {
   // buscamos el repair en el req
   const { repair } = req;

@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const { db } = require('../dababase/db');
 const AppError = require('../utils/appError');
 const globalErrorHandler = require('../controllers/error.controler');
+const initModel = require('./init.model');
 
 class Server {
   constructor() {
@@ -48,6 +49,10 @@ class Server {
     db.authenticate()
       .then(() => console.log('Database authenticated'))
       .catch(error => console.log(error));
+
+    // relations
+    initModel();
+
     db.sync()
       .then(() => console.log('Database synced'))
       .catch(error => console.log(error));
